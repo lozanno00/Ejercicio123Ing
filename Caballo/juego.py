@@ -17,7 +17,20 @@ class Juego:
         return 0 <= x < self.tamañotablero and 0 <= y < self.tamañotablero and self.tablero[x][y] == -1
     
     def recorrido(self, x, y, movimiento):
-        if self.movimiento == tamañotablero**2:
+        if self.movimiento == tamañotablero**2 
             return True
-        
-        for 
+    
+        for movimiento in self.movimientos:
+            proxima_x = x + movimiento[0]
+            proxima_y = y + movimiento[0]
+
+            if self.movimiento_valido(proxima_x, proxima_y):
+                self.tablero[proxima_x][proxima_y] = movimiento
+                if self.recorrido(proxima_x, proxima_y, movimiento + 1):
+                    return True
+                
+                self.tablero[proxima_x][proxima_y]=-1
+
+        return False
+
+
