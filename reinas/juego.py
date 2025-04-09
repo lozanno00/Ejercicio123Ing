@@ -1,3 +1,5 @@
+from database import session, NQueensResult
+
 def es_seguro(tablero, fila, columna, n):
     """Verifica si es seguro colocar una reina en la posición dada."""
     # Verificar la columna
@@ -46,3 +48,18 @@ def mostrar_tablero(tablero):
     """Muestra el tablero en un formato legible."""
     for fila in tablero:
         print(" ".join("Q" if celda == 1 else "." for celda in fila))
+
+def ejecutar_reinas(n):
+    """Ejecuta el juego de las N Reinas y guarda el resultado en la base de datos."""
+    tablero = n_reinas(n)
+    if tablero:
+        resultado = "\n".join([" ".join("Q" if celda == 1 else "." for celda in fila) for fila in tablero])
+    else:
+        resultado = "No se encontró una solución."
+    
+    # Save to database
+    resultado_db = NQueensResult(board_size=n, result=resultado)
+    session.add(resultado_db)
+    session.commit()
+    
+    return resultado

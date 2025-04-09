@@ -1,3 +1,5 @@
+from database import session, KnightTourResult
+
 def es_movimiento_valido(x, y, tablero, n):
     """Verifica si el movimiento es válido dentro del tablero."""
     return 0 <= x < n and 0 <= y < n and tablero[x][y] == -1
@@ -40,13 +42,17 @@ def mostrar_tablero(tablero):
     for fila in tablero:
         print(" ".join(f"{celda:2}" for celda in fila))
 
-def ejecutar_caballo():
-    """Ejecuta el juego del recorrido del caballo."""
-    print("Juego del recorrido del caballo")
-    n = int(input("Ingrese el tamaño del tablero (n x n): "))
+def ejecutar_caballo(n):
+    """Ejecuta el recorrido del caballo y guarda el resultado en la base de datos."""
     tablero = recorrido_caballo(n)
     if tablero:
-        print("Recorrido completado:")
-        mostrar_tablero(tablero)
+        resultado = "\n".join([" ".join(f"{celda:2}" for celda in fila) for fila in tablero])
     else:
-        print("No se encontró una solución para el tamaño del tablero proporcionado.")
+        resultado = "No se encontró una solución."
+    
+    # Save to database
+    resultado_db = KnightTourResult(board_size=n, result=resultado)
+    session.add(resultado_db)
+    session.commit()
+    
+    return resultado

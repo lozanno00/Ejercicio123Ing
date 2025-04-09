@@ -1,3 +1,5 @@
+from database import session, HanoiResult
+
 def inicializar_torres(n):
     """Inicializa las torres con los discos."""
     return {
@@ -28,7 +30,7 @@ def calcular_movimientos(n):
     return movimientos
 
 def ejecutar_hanoi_visual(n):
-    """Ejecuta el juego de Hanoi y muestra el estado de las torres en cada movimiento."""
+    """Ejecuta el juego de Hanoi y guarda el resultado en la base de datos."""
     torres = inicializar_torres(n)
     movimientos = calcular_movimientos(n)
     print("Estado inicial:")
@@ -38,6 +40,15 @@ def ejecutar_hanoi_visual(n):
         mover_disco(torres, origen, destino)
         mostrar_torres(torres)
     print("\nJuego completado.")
+    
+    estados = "\n".join([f"Estado {i}:\n{estado}" for i, estado in enumerate(visualizar_hanoi(n))])
+    
+    # Save to database
+    resultado = HanoiResult(num_disks=n, result=estados)
+    session.add(resultado)
+    session.commit()
+    
+    return estados
 
 def mostrar_torres(torres):
     """Muestra el estado actual de las torres."""
