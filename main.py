@@ -64,36 +64,11 @@ def ejecutar_caballo_tk(n, output_widget):
     output_widget.delete(1.0, tk.END)
     output_widget.insert(tk.END, resultado)
 
-def ejecutar_reinas_tk(n, output_widget, canvas):
-    """Ejecuta el juego de las N Reinas y muestra el tablero en el widget de salida y gráficamente."""
+def ejecutar_reinas_tk(n, output_widget):
+    """Ejecuta el juego de las N Reinas y muestra el tablero en el widget de salida."""
     resultado = ejecutar_reinas(n)
     output_widget.delete(1.0, tk.END)
-    if "No se encontró una solución" in resultado:
-        output_widget.insert(tk.END, resultado)
-        return
-
-    # Mostrar el resultado en texto
     output_widget.insert(tk.END, resultado)
-
-    # Representar gráficamente el tablero
-    canvas.delete("all")
-    cell_size = 500 // n  # Ajustar el tamaño de las celdas según el tamaño del tablero
-    tablero = [[1 if c == "Q" else 0 for c in row.split()] for row in resultado.split("\n") if row]
-
-    for i in range(n):
-        for j in range(n):
-            x1, y1 = j * cell_size, i * cell_size
-            x2, y2 = x1 + cell_size, y1 + cell_size
-            color = "white" if (i + j) % 2 == 0 else "gray"
-            canvas.create_rectangle(x1, y1, x2, y2, fill=color, outline="black")
-            if tablero[i][j] == 1:
-                canvas.create_oval(
-                    x1 + cell_size // 4,
-                    y1 + cell_size // 4,
-                    x2 - cell_size // 4,
-                    y2 - cell_size // 4,
-                    fill="black"
-                )
 
 def main():
     root = tk.Tk()
@@ -141,12 +116,10 @@ def main():
     reinas_input.pack(pady=5)
     reinas_output = scrolledtext.ScrolledText(tab_reinas, width=50, height=10)
     reinas_output.pack(pady=5)
-    reinas_canvas = Canvas(tab_reinas, width=500, height=500, bg="white")
-    reinas_canvas.pack(pady=5)
     ttk.Button(
         tab_reinas,
         text="Ejecutar",
-        command=lambda: ejecutar_reinas_tk(int(reinas_input.get()), reinas_output, reinas_canvas)
+        command=lambda: ejecutar_reinas_tk(int(reinas_input.get()), reinas_output)
     ).pack(pady=5)
 
     root.mainloop()
